@@ -18,6 +18,38 @@ typedef long long ll;
 #define no cout<<"NO"<<endl
 #define print(x) cout<<x<<endl
 #define is_odd(x) (x%2!=0)
+void prob_a(void);
+void prob_b(void);
+void prob_c(void);
+void prob_d(void);
+void prob_e(void);
+void prob_f(void);
+void prob_g1(void);
+void prob_g2(void);
+void prob_a(void) {
+
+}
+void prob_b(void) {
+
+}
+void prob_c(void) {
+
+}
+void prob_d(void) {
+
+}
+void prob_e(void) {
+
+}
+void prob_f(void) {
+
+}
+void prob_g1(void) {
+
+}
+void prob_g2(void) {
+
+}
 /// <summary>
 /// return the gcd greatest comon divisor of a and b
 /// </summary>
