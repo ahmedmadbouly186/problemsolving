@@ -21,11 +21,17 @@ void prob_b(void);
 bool dfs_b(vector<vector<int>>& edges, vector<bool>& visit, int node, bool type);
 
 void prob_c(void);
-bool dfs_c(vector<vector<int>>&edges, vector<int>&visit, vector<int>&out, int node);
+bool dfs_c(vector<vector<int>>& edges, vector<int>& visit, vector<int>& out, int node);
 
 void prob_d(void);
+int dfs_d(vector<vector<int>>&edges, vector<bool>&visit, int node);
+
 void prob_e(void);
+int dfs_e(map<string, vector<string>>&edges, map<string, bool>&visit, string animal);
+
 void prob_f(void);
+int dfs_f(vector<vector<int>>&edges, int node);
+
 void prob_g(void);
 
 int main() {
@@ -33,7 +39,7 @@ int main() {
 	cin.tie(NULL);
 	cout.tie(NULL);
 
-	prob_c();
+	prob_f();
 
 	return 0;
 }
@@ -94,19 +100,19 @@ void prob_b(void) {
 				ac &= dfs_b(edges, visit, i);
 		}
 
-		cout << "Scenario #" << tt+1 << ":" << endl;
+		cout << "Scenario #" << tt + 1 << ":" << endl;
 		if (ac)cout << "No suspicious bugs found!" << endl;
 		else 	cout << "Suspicious bugs found!" << endl;
 	}
 }
 
-bool dfs_c(vector<vector<int>>& edges, vector<int>& visit,vector<int>&out, int node) {
+bool dfs_c(vector<vector<int>>& edges, vector<int>& visit, vector<int>& out, int node) {
 	if (visit[node] == 1)return true;
 	else if (visit[node] == 0)return false;
 	visit[node] = 0;
 	bool could = true;
 	f(i, edges[node].size()) {
-		could&=dfs_c(edges, visit, out, edges[node][i]);
+		could &= dfs_c(edges, visit, out, edges[node][i]);
 	}
 	visit[node] = 1;
 	out.push_back(node);
@@ -121,7 +127,7 @@ void prob_c(void) {
 	{
 
 
-		cin >>n>> m;
+		cin >> n >> m;
 		if (n == 0)break;
 		vector<vector<int>>edges(n + 1, vector<int>(0));
 		vector<int>visit(n + 1, -1);
@@ -142,14 +148,92 @@ void prob_c(void) {
 			cout << "IMPOSSIBLE" << endl;
 	}
 }
-void prob_d(void) {
+int dfs_d(vector<vector<int>>& edges, vector<bool>& visit, int node) {
+	if (visit[node])return 0;
+	visit[node] = true;
+	int sum = 1;
 
+	f(i, edges[node].size())sum += dfs_d(edges, visit, edges[node][i]);
+	return sum;
+}
+void prob_d(void) {
+	int t; cin >> t;
+	f(tt, t) {
+		int n, m; cin >> n >> m;
+		vector<bool>visit(n + 1,false);
+		vector<vector<int>>edges(n + 1, vector<int>(0));
+		f(i, m) {
+			int u, v; cin >> u >> v;
+			edges[u].push_back(v);
+			edges[v].push_back(u);
+		}
+		int maxi = 0;
+		ff(i, 1, n + 1) {
+			maxi = max(maxi, dfs_d(edges, visit, i));
+		}
+		cout << maxi << endl;
+	}
+}
+int dfs_e(map<string, vector<string>>& edges,map<string, bool>& visit, string animal) {
+	if (visit[animal])return 0;
+	visit[animal] = 1;
+	int sum = 1;
+	vector<string>eat = edges[animal];
+	f(i, eat.size()) {
+		sum += dfs_e(edges, visit, eat[i]);
+	}
+	return sum;
 }
 void prob_e(void) {
-
+	int n, m;
+	while (true)
+	{
+		cin >> n >> m;
+		if (n == 0)break;
+		map<string, bool>visit;
+		map<string,vector<string>>edges;
+		f(i, n) {
+			string s;
+			cin >> s;
+			visit[s] = false;
+			edges[s] = vector<string>(0);
+		}
+		f(i, m) {
+			string u, v;
+			cin >> u >> v;
+			edges[v].push_back(u);
+		}
+		int maxi = 0;
+		for (auto x : edges) {
+			visit.clear();
+			maxi = max(maxi, dfs_e(edges,visit,x.first));
+		}
+		cout << maxi << endl;
+	}
+	
+}
+int dfs_f(vector<vector<int>>& edges, int node) {
+	int maxi = 0;
+	f(i, edges[node].size()) {
+		maxi = max(maxi, dfs_f(edges, edges[node][i]));
+	}
+	return 1 + maxi;
 }
 void prob_f(void) {
-
+	int n;
+	cin >> n;
+	vector<vector<int>>edges(n + 1, vector<int>(0));
+	ff(i,1, n+1) {
+		int s; cin >> s;
+		if (s != -1) {
+			edges[s].push_back(i);
+		}
+	}
+	int maxi = 0;
+	ff(i, 1, n + 1) {
+		maxi = max(maxi, dfs_f(edges, i));
+	}
+	cout << maxi << endl;
 }
 void prob_g(void) {
 
