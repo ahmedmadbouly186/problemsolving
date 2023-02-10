@@ -24,8 +24,13 @@ void prob_c(void);
 void prob_d(void);
 void prob_e(void);
 void prob_f(void);
-void prob_g1(void);
-void prob_g2(void);
+void prob_g(void);
+void prob_h(void);
+void prob_i(void);
+void prob_j(void);
+void prob_k(void);
+void prob_l(void);
+
 void prob_a(void) {
 
 }
@@ -44,10 +49,22 @@ void prob_e(void) {
 void prob_f(void) {
 
 }
-void prob_g1(void) {
+void prob_g(void) {
 
 }
-void prob_g2(void) {
+void prob_h(void) {
+
+}
+void prob_i(void) {
+
+}
+void prob_j(void) {
+
+}
+void prob_k(void) {
+
+}
+void prob_l(void) {
 
 }
 /// <summary>
