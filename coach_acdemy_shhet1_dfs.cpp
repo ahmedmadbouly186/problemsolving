@@ -18,7 +18,7 @@ void prob_a(void);
 void dfs_a(vector<vector<int>>& edges, vector<bool>& visit, int node);
 
 void prob_b(void);
-bool dfs_b(vector<vector<int>>& edges, vector<bool>& visit, int node, bool type);
+//bool dfs_b(vector<vector<int>>&edges, vector<int>&visit, int node, bool type = 0);
 
 void prob_c(void);
 bool dfs_c(vector<vector<int>>& edges, vector<int>& visit, vector<int>& out, int node);
@@ -26,10 +26,7 @@ bool dfs_c(vector<vector<int>>& edges, vector<int>& visit, vector<int>& out, int
 void prob_d(void);
 int dfs_d(vector<vector<int>>& edges, vector<bool>& visit, int node);
 
-/// <summary>
-/// 
-/// </summary>
-/// <param name=""></param>
+
 void prob_e(void);
 int dfs_e(map<string, vector<string>>& edges, map<string, bool>& visit, string animal);
 
@@ -37,23 +34,28 @@ void prob_f(void);
 int dfs_f(vector<vector<int>>& edges, int node);
 
 void prob_g(void);
-void dfs_g(vector<vector<int>>&edges, vector<bool>&visit, int node);
+void dfs_g(vector<vector<int>>& edges, vector<bool>& visit, int node);
 
 void prob_h(void);
-void dfs_h(vector<vector<int>>&edges, vector<bool>&visit, vector<int>&out, int node);
+void dfs_h(vector<vector<int>>& edges, vector<bool>& visit, vector<int>& out, int node);
 
 void prob_i(void);
-//int dfs_i(vector<vector<int>>&edges, vector<bool>&visit, int node);
+void  dfs_i(vector<vector<int>>& edges, vector<bool>& visit, int node);
 
 void prob_j(void);
+
 void prob_k(void);
+void dfs_k(map<int, vector<int>>& edges, int node);
+
 void prob_l(void);
+void dfs_l(vector<vector<int>>& edges, vector<bool>& visit, vector<int>& prev, int node);
+
 int main() {
 	ios_base::sync_with_stdio(0);
 	cin.tie(NULL);
 	cout.tie(NULL);
 
-	prob_i();
+	prob_j();
 
 	return 0;
 }
@@ -259,12 +261,12 @@ void dfs_g(vector<vector<int>>& edges, vector<bool>& visit, int node) {
 }
 void prob_g(void) {
 	int n; cin >> n;
-	vector<vector<int>>edges(n+1,vector<int>(0));
+	vector<vector<int>>edges(n + 1, vector<int>(0));
 	vector<bool>visit(n + 1, 0);
 	f(i, n) {
 		int x; cin >> x;
 		edges[i + 1].push_back(x);
-		edges[x].push_back(i+1);
+		edges[x].push_back(i + 1);
 	}
 	int count = 0;
 	ff(i, 1, n + 1) {
@@ -285,7 +287,7 @@ void dfs_h(vector<vector<int>>& edges, vector<bool>& visit, vector<int>& out, in
 }
 
 void prob_h(void) {
-	int n, m; 
+	int n, m;
 	while (true) {
 		cin >> n >> m;
 		if (n == 0)break;
@@ -296,7 +298,7 @@ void prob_h(void) {
 			int u, v; cin >> u >> v;
 			edges[v].push_back(u);
 		}
-		ff(i,1, 1+n) {
+		ff(i, 1, 1 + n) {
 			dfs_h(edges, visit, out, i);
 		}
 		f(i, out.size()) {
@@ -307,11 +309,11 @@ void prob_h(void) {
 	}
 }
 void  dfs_i(vector<vector<int>>& edges, vector<bool>& visit, int node) {
-	if (visit[node])return ;
+	if (visit[node])return;
 	visit[node] = 1;
 	long long sum = 1;
 	f(i, edges[node].size()) {
-		 dfs_i(edges, visit, edges[node][i]);
+		dfs_i(edges, visit, edges[node][i]);
 	}
 }
 void prob_i(void) {
@@ -331,14 +333,63 @@ void prob_i(void) {
 			dfs_i(edges, visit, i);
 		}
 	}
-	cout << (((long long )1)<<(n-maxi)) << endl;
+	cout << (((long long)1) << (n - maxi)) << endl;
 }
 void prob_j(void) {
-
+	
+}
+void dfs_k(map<int, vector<int>>& edges, int node) {
+	if (edges[node].size() == 0) {
+		cout << node << endl;
+		return;
+	}
+	int next = edges[node][0];
+	if (edges[next][0] == node)edges[next].erase(edges[next].begin());
+	else edges[next].erase(edges[next].begin() + 1);
+	cout << node << " ";
+	dfs_k(edges, next);
 }
 void prob_k(void) {
-
+	int n; cin >> n;
+	map<int, vector<int>>edges;
+	f(i, n) {
+		int u, v; cin >> u >> v;
+		edges[u].push_back(v);
+		edges[v].push_back(u);
+	}
+	int start = -1;
+	for (auto x : edges)if (x.second.size() == 1) {
+		start = x.first;
+		break;
+	}
+	dfs_k(edges, start);
+}
+void dfs_l(vector<vector<int>>& edges, vector<bool>& visit, vector<int>& prev, int node) {
+	visit[node] = true;
+	f(i, edges[node].size()) {
+		if (!visit[edges[node][i]]) {
+			prev[edges[node][i]] = node;
+			dfs_l(edges, visit, prev, edges[node][i]);
+		}
+	}
 }
 void prob_l(void) {
+	int n, r, l;
+	cin >> n >> r >> l;
+	vector<vector<int>>edges(n + 1, vector<int>(0));
+	vector<bool>visit(n + 1, 0);
+	vector<int>prev(n + 1, -1);
+	ff(i, 1, n + 1) {
+		if (i == r)continue;
+		int x; cin >> x;
+		edges[x].push_back(i);
+		edges[i].push_back(x);
+	}
+	dfs_l(edges, visit, prev, l);
+	ff(i, 1, n + 1) {
+		if (i == l)continue;
+		cout << prev[i] << " ";
+	}
+	cout << endl;
 
 }
