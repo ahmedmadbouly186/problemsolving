@@ -1,3 +1,6 @@
+#pragma GCC optimization("Ofast")
+//#pragma GCC target("popcnt")
+
 #include <iostream>
 #include <vector>
 #include <string.h>
@@ -9,9 +12,11 @@
 #include <unordered_set>
 #include <unordered_map>
 #include<iterator> // for iterators
+#include <queue>
 
 using namespace std;
 typedef long long ll;
+typedef vector<vector<int>> matrix;
 #define f(x,y) for(ll x=0;x<y;x++)
 #define ff(x,z,y) for(ll x=z;x<y;x++)
 #define yes cout<<"YES"<<endl
@@ -30,6 +35,11 @@ void prob_i(void);
 void prob_j(void);
 void prob_k(void);
 void prob_l(void);
+
+void prob_M(void);
+void prob_N(void);
+void prob_O(void);
+void prob_P(void);
 
 void prob_a(void) {
 
@@ -67,10 +77,35 @@ void prob_k(void) {
 void prob_l(void) {
 
 }
+void prob_M(void) {
+
+}
+void prob_N(void) {
+
+}
+void prob_O(void) {
+
+}
+void prob_P(void) {
+
+}
+
+template <typename T>
+bool is_prime(T n) {
+	if (n == 2)return true;
+	if (n == 0 || n == 1 || n % 2 == 0)return false;
+	T  sqr = sqrt(n);
+	for (T i = 3; i <= sqr; i += 2)
+	{
+		if (n % i == 0)return false;
+	}
+	return true;
+}
 /// <summary>
 /// return the gcd greatest comon divisor of a and b
 /// </summary>
-long long  gcd(long long  a, long long b) {
+template <typename T>
+T  gcd(T  a, T b) {
 	if (a == 1 || b == 1)return 1;
 	else if (a == 0)return b;
 	else if (b == 0)return a;
@@ -79,7 +114,8 @@ long long  gcd(long long  a, long long b) {
 /// <summary>
 /// return the gcd least comon multiblier of a and b
 /// </summary>
-long long  lcm(long long a, long long b) {
+template <typename T>
+T  lcm(T a, T b) {
 	return a * b / gcd(a, b);
 }
 void comb(int N, int K)
@@ -201,3 +237,68 @@ int size = 2 * (1 << h) - 1;
 vector<int>st(size, 0);
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+///////////////////////////////// implement the DSU //////////////////////////
+const int N = 1e6 + 10;
+int par[N];
+void init(int n) {
+	for (int i = 1; i <= n; i++)
+		par[i] = i;
+}
+int find_parent(int u) {
+	if (par[u] == u)return u;
+	else return par[u] = find_parent(par[u]);
+}
+
+bool is_con(int u, int v) {
+	return find_parent(u) == find_parent(v);
+}
+
+void con(int u, int v) {
+	if (is_con(u, v))return;
+	u = find_parent(u);
+	v = find_parent(v);
+	par[u] = v;
+}
+
+////////////////////////////////////////////////////Heap sort implementation ///////////////////////////
+
+void push_down(vector<int>& v, int idx, int sz) {
+	while (idx < sz) {
+		int lf = 2 * idx + 1, rt = lf + 1, mx;
+		if (lf >= sz)
+			break;
+		else if (rt >= sz) mx = lf;
+		else mx = v[lf] > v[rt] ? lf : rt;
+		if (v[mx] > v[idx])
+			swap(v[mx], v[idx]), idx = mx;
+		else break;
+
+	}
+}
+void push_up(vector<int>& v, int idx) {
+	while (idx) {
+		int p = (idx - 1) / 2;
+		if (v[p] < v[idx])
+			swap(v[p], v[idx]), idx = p;
+		else break;
+	}
+}
+void add(vector<int>& v, int val, int sz) {
+	v[sz] = val;
+	push_up(v, sz);
+}
+void remove_max(vector<int>& v, int sz) {
+	v[0] = v[--sz];
+	push_down(v, 0, sz);
+}
+void heap_sort(vector<int>& v) {
+	for (int sz = 1; sz < v.size(); ++sz)
+		add(v, v[sz], sz);
+	for (int sz = v.size(); sz > 0; --sz) {
+		int mx = v[0];
+		remove_max(v, sz);
+		v[sz - 1] = mx;
+	}
+}
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
