@@ -23,6 +23,10 @@ typedef vector<vector<int>> matrix;
 #define no cout<<"NO"<<endl
 #define print(x) cout<<x<<endl
 #define is_odd(x) (x%2!=0)
+#define FIO	ios_base::sync_with_stdio(false);cin.tie(NULL);cout.tie(NULL);
+#define all(v) v.begin(),v.end()
+#define sortv(v) sort(all(v))
+
 void prob_a(void);
 void prob_b(void);
 void prob_c(void);
@@ -118,6 +122,23 @@ template <typename T>
 T  lcm(T a, T b) {
 	return a * b / gcd(a, b);
 }
+/// <summary>
+/// count the number of digit in number
+/// </summary>
+/// <typeparam name="T"> prefer to be integer like short or long or long long</typeparam>
+/// <param name="num">the input number that we need to calc the number of digits for it</param>
+/// <returns>the number of digiets</returns>
+template <typename T>
+T count_digit(T num) {
+	int count = 0;
+	while (num != 0) {
+		num = num / 10;
+		count++;
+	}
+	return count;
+
+}
+
 void comb(int N, int K)
 {
 	std::string bitmask(K, 1); // K leading 1's
@@ -200,6 +221,9 @@ int main() {
 	ios_base::sync_with_stdio(false);
 	cin.tie(NULL);
 	cout.tie(NULL);
+	freopen("input.txt", "r", stdin);
+	freopen("output.txt", "w", stdout);
+
 }
 
 
@@ -237,31 +261,7 @@ int size = 2 * (1 << h) - 1;
 vector<int>st(size, 0);
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-///////////////////////////////// implement the DSU //////////////////////////
-const int N = 1e6 + 10;
-int par[N];
-void init(int n) {
-	for (int i = 1; i <= n; i++)
-		par[i] = i;
-}
-int find_parent(int u) {
-	if (par[u] == u)return u;
-	else return par[u] = find_parent(par[u]);
-}
-
-bool is_con(int u, int v) {
-	return find_parent(u) == find_parent(v);
-}
-
-void con(int u, int v) {
-	if (is_con(u, v))return;
-	u = find_parent(u);
-	v = find_parent(v);
-	par[u] = v;
-}
-
-////////////////////////////////////////////////////Heap sort implementation ///////////////////////////
+/////////////////////////////////////////////////////////////// Heap sort ///////////////////////////////////////////
 
 void push_down(vector<int>& v, int idx, int sz) {
 	while (idx < sz) {
@@ -302,3 +302,73 @@ void heap_sort(vector<int>& v) {
 	}
 }
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////// DSU ///////////////////////////////////////////////////////
+const int N = 1e6 + 10;
+int par[N];
+void init(int n) {
+	for (int i = 1; i <= n; i++)
+		par[i] = i;
+}
+int find_parent(int u) {
+	if (par[u] == u)return u;
+	else return par[u] = find_parent(par[u]);
+}
+
+bool is_con(int u, int v) {
+	return find_parent(u) == find_parent(v);
+}
+
+void con(int u, int v) {
+	if (is_con(u, v))return;
+	u = find_parent(u);
+	v = find_parent(v);
+	par[u] = v;
+}
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////// Dijkstra //////////////////////////////////////////////////////////////
+//complixty = O(E + vlog(v) )
+vector<vector<pair<int, int>>> g;
+vector<ll>dist;
+vector<int>par;
+int n, m;
+void test_case() {
+	cin >> n >> m;
+	g = vector<vector<pair<int, int>>>(n + 1);
+	dist = vector<ll>(n + 1, 1e17);
+	par = vector<int>(n + 1, -1);
+	f(i, m) {
+		int u, v, w;
+		cin >> u >> v >> w;
+		g[u].push_back({ v,w });
+		g[v].push_back({ u,w });
+	}
+}
+void dijkstra(int src) {
+	dist[src] = 0;
+	par[src] = -1;
+	priority_queue<pair<ll, int>, vector<pair<ll, int>>, greater<>>pq;
+	pq.push({ 0,src });
+	while (!pq.empty())
+	{
+		ll curent_cost = pq.top().first, node = pq.top().second;
+		pq.pop();
+		if (curent_cost > dist[node])continue;
+		for (auto x:g[node])
+		{
+			int next = x.first;
+			ll next_cost = curent_cost + x.second;
+			if (next_cost < dist[next])
+			{
+				pq.push({ next_cost,next });
+				par[next] = node;
+				dist[node] = curent_cost;
+			}
+		}
+	}
+}
+void path(int node) {
+	if (par[node] != -1)
+		path(par[node]);
+	cout << node << " ";
+}
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
