@@ -26,6 +26,7 @@ typedef vector<vector<int>> matrix;
 #define sortv(v) sort(all(v))
 vector<vector<pair<int, ll>>> g;
 vector<ll> dist;
+vector<vector<ll>> distanc;
 vector<int> par;
 int n, m, k;
 ////// solution for problem a
@@ -48,6 +49,8 @@ void prob_d(void);
 void prob_e(void);
 void prob_f(void);
 void prob_g(void);
+
+void dijstkra_h(int src);
 void prob_h(void);
 void prob_i(void);
 void prob_j(void);
@@ -294,9 +297,82 @@ void prob_f(void)
 void prob_g(void)
 {
 }
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+void dijstkra_h(int src)
+{
+	vector<ll> dist(1 + n, 1e17);
+	dist[src] = 0;
+	priority_queue<pair<ll, int>, vector<pair<ll, int>>, greater<>> pq;
+	pq.push({0, src});
+	while (!pq.empty())
+	{
+		int node = pq.top().second;
+		int cur_cost = pq.top().first;
+		pq.pop();
+		if (cur_cost > dist[node])
+			continue;
+		for (auto x : g[node])
+		{
+			int next = x.first;
+			int next_cost = cur_cost + x.second;
+			if (next_cost >= dist[next])
+				continue;
+			dist[next] = next_cost;
+			pq.push({next_cost, next});
+		}
+	}
+	distanc[src] = dist;
+}
 void prob_h(void)
 {
+	int T = 1;
+	// cin >> T;
+	f(tt, T)
+	{
+		cin >> n >> m >> k;
+		g = vector<vector<pair<int, ll>>>(1 + n);
+		distanc = vector<vector<ll>>(1 + n, vector<ll>(1 + n, 1e17));
+		vector<vector<int>> edges(m, vector<int>(3));
+		vector<pair<int, int>> dil(k);
+		f(i, m)
+		{
+			int u, v, w;
+			cin >> u >> v >> w;
+			edges[i] = {u, v, w};
+			g[u].push_back({v, w});
+			g[v].push_back({u, w});
+		}
+		f(i, k)
+		{
+			cin >> dil[i].first >> dil[i].second;
+		}
+		ff(i, 1, 1 + n)
+		{
+			dijstkra_h(i);
+		}
+		ll mini = 1e17;
+		f(i, m)
+		{
+			ll cost = 0;
+			int u, v;
+			u = edges[i][0];
+			v = edges[i][1];
+			for (auto &x : dil)
+			{
+				int a = x.first;
+				int b = x.second;
+				ll d1, d2, d3;
+				d1 = distanc[a][b];
+				d2 = distanc[a][u] + distanc[v][b];
+				d3 = distanc[a][v] + distanc[u][b];
+				cost += min(d1, min(d2, d3));
+			}
+			mini = min(mini, cost);
+		}
+		print(mini);
+	}
 }
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void prob_i(void)
 {
 }
